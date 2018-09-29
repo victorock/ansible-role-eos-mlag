@@ -1,0 +1,12 @@
+---
+- name: "Load setup"
+  include_role:
+    name: "ansible-network.config_manager"
+    tasks_from: "load"
+  vars:
+    config_manager_text: "{{ lookup('template', 'setup.cfg.j2') }}"
+
+- name: "Save config"
+  include_role:
+    name: "ansible-network.config_manager"
+    tasks_from: "save"

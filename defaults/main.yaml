@@ -1,0 +1,15 @@
+eos_mlag_neighbor_host: "vEOS-2"
+eos_mlag_vlan_id: "4094"
+eos_mlag_domain_id: "1"
+eos_mlag_site_id: "1"
+eos_mlag_device_id: "1"
+eos_mlag_linkagg_id: "1"
+eos_mlag_vlans:
+  - "all"
+eos_mlag_linkagg_members: 
+  - "Ethernet1"
+eos_mlag_heartbeat: "10000"
+eos_mlag_reload_delay: "150"
+
+
+eos_mlag_config_linkaggs: []

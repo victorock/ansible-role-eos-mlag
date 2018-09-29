@@ -1,0 +1,43 @@
+! Control Plane VRF
+vrf definition mlag_ctrl_plane
+    description MLAG_CONTROL_PLANE
+    rd {{ eos_mlag_site_id }}:{{ eos_mlag_site_id }}
+
+! Peering Port-Channel 
+{% for eos_mlag_link in eos_mlag_links %}
+interface Ethernet {{ eos_mlag_link }}
+    channel-group {{ eos_mlag_linkagg_id }} mode active
+    exit
+{% endfor %}
+
+interface Port-Channel{{ eos_mlag_link_id }}
+    switchport
+    switchport mode trunk
+    switchport trunk group mlagpeer
+    switchport trunk allowed vlans {{ eos_mlag_vlans | join(',') }}
+    no shutdown
+    exit
+
+! Peering VLAN
+vlan {{ eos_mlag_vlan_id }}
+    trunk group mlagpeer
+    exit
+
+no spanning-tree vlan {{ eos_mlag_vlan_id }}
+
+interface Vlan{{ eos_mlag_vlan_id }}
+    ip address 169.254.{{ eos_mlag_site_id }}.{{ eos_mlag_device_id }}/24
+    no autostate
+    exit
+
+! MLAG Configuration
+mlag configuration
+    local-interface Vlan{{ eos_mlag_vlan_id }}
+    peer-address 169.254.{{ eos_mlag_site_id }}.{{ hostvars[eos_mlag_neighbor_host].eos_mlag_device_id }}
+    peer-link port-channel {{ eos_mlag_linkagg_id }}
+    domain-id {{ eos_mlag_domain_id }}
+    heartbeat-interval {{ eos_mlag_heartbeat }}
+    reload-delay {{ eos_mlag_reload_delay }}
+    ip virtual-router mac-address mlag-peer
+    platform sand multicast replication default ingress
+    exit
