@@ -4,7 +4,7 @@
     name: "ansible-network.config_manager"
     tasks_from: "load"
   vars:
-    config_manager_text: "{{ lookup('template', 'config.cfg.j2') }}"
+    config_manager_file: "templates/linkagg.cfg.j2"
 
 - name: "Save config"
   include_role:

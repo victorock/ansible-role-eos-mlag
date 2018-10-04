@@ -1,10 +1,10 @@
 ---
-- name: "Load setup"
+- name: "Load config"
   include_role:
     name: "ansible-network.config_manager"
     tasks_from: "load"
   vars:
-    config_manager_file: "templates/setup.cfg.j2"
+    config_manager_file: "templates/linkaggs.cfg.j2"
 
 - name: "Save config"
   include_role:

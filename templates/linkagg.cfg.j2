@@ -1,0 +1,9 @@
+{%  for member in eos_mlag_linkagg.members %}
+interface Ethernet {{ member }}
+    channel-group {{ eos_mlag_linkagg.group }} mode {{ eos_mlag_linkagg.mode | default('active') }}
+    exit
+{%  endfor %}
+
+interface Port-Channel{{ eos_mlag_linkagg.group }}
+    mlag {{ eos_mlag_linkagg.mlag }}
+    exit
