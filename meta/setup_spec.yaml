@@ -1,13 +1,74 @@
 ---
-eos_mlag_neighbor_host: "vEOS-2"
-eos_mlag_vlan_id: "4094"
-eos_mlag_domain_id: "1"
-eos_mlag_site_id: "1"
-eos_mlag_device_id: "1"
-eos_mlag_linkagg_id: "1"
-eos_mlag_vlans:
-  - "all"
-eos_mlag_linkagg_members: 
-  - "Ethernet1"
-eos_mlag_heartbeat: "10000"
-eos_mlag_reload_delay: "150"
+argument_spec:
+  eos_mlag_setup:
+    type: dict
+    options:
+      peer:
+        type: str
+        required: true
+        description:
+          - "The MLAG peer switch hostname (inventory_hostname)"
+
+      vlan:
+        default: "4094"
+        description:
+          - "VLAN to use for peer communication."
+          - "VLAN is used to create the interface vlan for MLAG_CONTROL_PLANE."
+
+      domain:
+        default: "1"
+        description:
+          - "Represents the MLAG domain."
+          - "The ID must be the same only for members of the same MLAG domain."
+          - "Domain is used to create the MLAG_CONTROL_PLANE VRF with RD <site>:<domain>"
+
+      site:
+        default: "1"
+        description:
+          - "Represents the site where the domain is located."
+          - "Site is used to create the MLAG_CONTROL_PLANE interface with address 169.254.<domain>.<site><device>"
+          - "Site is used to create the MLAG_CONTROL_PLANE VRF with RD <site>:<domain>"
+
+      device:
+        default: "1"
+        description:
+          - "Unique ID to represent the device member of the MLAG domain"
+          - "The ID is used to create the peer communication address 169.254.<domain>.<site><device>"
+
+      linkagg:
+        default: "1"
+        description:
+          - "Linkagg to use for the peer-to-peer communication."
+
+      vlans:
+        type: list
+        default:
+          - "100-200"
+        description:
+          - "List of vlans member of the MLAG domain"
+          - "VLANs are created if they do not exist"
+
+      interlinks:
+        type: list
+        default:
+          - "Ethernet1"
+        description:
+          - "List of physical interfaces used by linkagg as interlinks for the peer-to-peer communication"
+
+      heartbeat:
+        default: "10000"
+        description:
+          - "Timer for heartbeat in ms"
+
+      reload_delay:
+        default: "150"
+        description:
+          - "Delay to bring MLAGs up after reload."
+          - "Helps to ensure that MLAGs comes up only when adjacency is done and tables are pre-populated."
+          - "Prevents blackhole of traffic when device is converging and tables being populated after a reboot."
+
+      extension:
+        type: dict
+        required: false
+        description:
+          - "Extension of specs with platform-specific keys/values"

@@ -1,43 +1,59 @@
+! ------------------- VRF -------------------------
 ! Control Plane VRF
-vrf definition mlag_ctrl_plane
+vrf definition MLAG_CONTROL_PLANE
     description MLAG_CONTROL_PLANE
-    rd {{ eos_mlag_site_id }}:{{ eos_mlag_site_id }}
+    rd {{ eos_mlag_setup.site }}:{{ eos_mlag_setup.domain }}
+
+! ------------------- LINKAGG ----------------------
+! Create Port-channel
+interface Port-Channel{{ eos_mlag_setup.linkagg }}
+    exit
 
 ! Peering Port-Channel 
-{% for eos_mlag_link in eos_mlag_links %}
-interface Ethernet {{ eos_mlag_link }}
-    channel-group {{ eos_mlag_linkagg_id }} mode active
+{% for link in eos_mlag_setup.interlinks %}
+interface Ethernet {{ link }}
+    channel-group {{ eos_mlag_setup.linkagg }} mode active
     exit
 {% endfor %}
 
-interface Port-Channel{{ eos_mlag_link_id }}
+interface Port-Channel{{ eos_mlag_setup.linkagg }}
     switchport
     switchport mode trunk
     switchport trunk group mlagpeer
-    switchport trunk allowed vlans {{ eos_mlag_vlans | join(',') }}
+    switchport trunk allowed vlans {{ eos_mlag_setup.vlans | join(',') }}
     no shutdown
     exit
 
+! -------------------- VLAN ----------------------
 ! Peering VLAN
-vlan {{ eos_mlag_vlan_id }}
+vlan {{ eos_mlag_setup.vlan }}
     trunk group mlagpeer
     exit
 
-no spanning-tree vlan {{ eos_mlag_vlan_id }}
+no spanning-tree vlan {{ eos_mlag_setup.vlan }}
 
-interface Vlan{{ eos_mlag_vlan_id }}
-    ip address 169.254.{{ eos_mlag_site_id }}.{{ eos_mlag_device_id }}/24
+! VLANs member of MLAG domain
+{%  for eos_mlag_vlan in eos_mlag_setup.vlans %}
+{%      if eos_mlag_vlan != "all" %}
+vlan {{ eos_mlag_vlan }} 
+    exit
+{%      endif %}
+{% endfor %}
+
+interface Vlan{{ eos_mlag.vlan }}
+    ip address 169.254.{{ eos_mlag_setup.domain }}.{{ eos_mlag_setup.site }}{{ eos_mlag_setup.device }}/24
     no autostate
     exit
 
+! -------------------- MLAG ----------------------
 ! MLAG Configuration
 mlag configuration
-    local-interface Vlan{{ eos_mlag_vlan_id }}
-    peer-address 169.254.{{ eos_mlag_site_id }}.{{ hostvars[eos_mlag_neighbor_host].eos_mlag_device_id }}
-    peer-link port-channel {{ eos_mlag_linkagg_id }}
-    domain-id {{ eos_mlag_domain_id }}
-    heartbeat-interval {{ eos_mlag_heartbeat }}
-    reload-delay {{ eos_mlag_reload_delay }}
+    local-interface Vlan{{ eos_mlag_setup.vlan }}
+    peer-address 169.254.{{ eos_mlag_setup.site }}.{{ hostvars[eos_mlag_setup.peer].eos_mlag_setup.device }}
+    peer-link port-channel {{ eos_mlag_setup.linkagg }}
+    domain-id {{ eos_mlag_setup.domain }}
+    heartbeat-interval {{ eos_mlag_setup.heartbeat }}
+    reload-delay {{ eos_mlag_setup.reload_delay }}
     ip virtual-router mac-address mlag-peer
-    platform sand multicast replication default ingress
+    platform send multicast replication default ingress
     exit

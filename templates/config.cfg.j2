@@ -1,0 +1,16 @@
+{%  for interface in eos_mlag_config %}
+
+interface Port-Channel{{ interface.group.id }}
+    switchport
+    exit
+
+interface {{ interface.group.id }}
+    switchport
+    channel-group {{ interface.mlag }} mode {{ interface.group.mode }} {{ 'force' if interface.group.force else '' }}
+    exit
+
+interface Port-Channel{{ interface.group.id }}
+    mlag {{ interface.mlag }}
+    exit
+
+{% endfor %}

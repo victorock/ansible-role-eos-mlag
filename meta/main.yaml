@@ -1,7 +1,7 @@
 galaxy_info:
   role_name: eos_mlag
   author: "Victor da Costa (victorock)"
-  description: "Data-driven MLAG Setup"
+  description: "Data-driven MLAG Setup and Configuration"
   company: "Red Hat"
   license: "GPLv3"
   min_ansible_version: 2.4

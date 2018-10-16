@@ -1,10 +1,14 @@
 ---
+- name: "Validate role spec"
+  validate_role_spec:
+    spec: config_spec.yaml
+
 - name: "Load config"
   include_role:
     name: "ansible-network.config_manager"
     tasks_from: "load"
   vars:
-    config_manager_file: "templates/linkagg.cfg.j2"
+    config_manager_file: "templates/config.cfg.j2"
 
 - name: "Save config"
   include_role:

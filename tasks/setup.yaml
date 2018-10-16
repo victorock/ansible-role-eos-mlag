@@ -1,4 +1,8 @@
 ---
+- name: "Validate role spec"
+  validate_role_spec:
+    spec: setup_spec.yaml
+
 - name: "Load setup"
   include_role:
     name: "ansible-network.config_manager"
