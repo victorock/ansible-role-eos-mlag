@@ -1,0 +1,18 @@
+---
+- name: initialize function
+  include_tasks: includes/init.yaml
+
+- name: set role supported functions
+  set_fact:
+    mlag_functions:
+      - setup
+      - interfaces
+      - noop
+
+- name: validate the requested function is supported
+  fail:
+    msg: "invalid function specified, expected one of {{ mlag_functions }}, got {{ function }}"
+  when: function | default('noop') not in mlag_functions
+
+- name: include function specific tasks and run
+  include_tasks: "{{ function  | default('noop') }}.yaml"

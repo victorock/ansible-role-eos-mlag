@@ -1,0 +1,5 @@
+{%  for interface in mlag_interfaces %}
+interface {{ interface.name }}
+    mlag {{ interface.mlag }}
+    exit
+{% endfor %}

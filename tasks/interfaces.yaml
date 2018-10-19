@@ -1,21 +1,21 @@
 ---
 - name: "Validate role spec"
   validate_role_spec:
-    spec: "setup_spec.yaml"
+    spec: "interfaces_spec.yaml"
 
-#- name: "Load setup"
+#- name: "Load interfaces"
 #  include_role:
 #    name: "ansible-network.config_manager"
 #    tasks_from: "load.yaml"
 #  vars:
-#    config_manager_file: "setup.cfg.j2"
+#    config_manager_file: "interfaces.cfg.j2"
 
-- name: "Load setup"
+- name: "Load interfaces"
   include_role:
     name: "{{ ansible_network_provider }}"
     tasks_from: "config_manager/load.yaml"
   vars:
-    config_manager_text: "{{ lookup( 'config_template', 'setup.cfg.j2') }}"
+    config_manager_text: "{{ lookup( 'config_template', 'interfaces.cfg.j2') }}"
 
 
 - name: "Save config"

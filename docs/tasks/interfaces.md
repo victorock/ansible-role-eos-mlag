@@ -2,7 +2,7 @@
 
 This function/method perform configuration of MLAG interfaces on EOS devices, adopting the basic datamodel (`mlag_config`) specified by `ansible-network.mlag`.
 
-The datamodel specification has an extension to accomodate platform-specific specifications in `eos_mlag_setup.extension`. 
+The datamodel specification has an extension to accomodate platform-specific specifications in `eos_mlag_config.extension`. 
 
 ## Function Parameters (Specs)
 
@@ -22,6 +22,7 @@ Roles called by playbooks will consume the data coming from the inventory based 
 
 > /inventory/group_vars/eos/ansible.yaml
 
+
 ```
 ansible_network_os: eos
 ansible_network_provider: ansible-network.arista_eos
@@ -30,6 +31,7 @@ ansible_network_provider: ansible-network.arista_eos
 ### Scope: Site
 
 > /inventory/group_vars/site-1/site.yaml
+
 
 ```
 site_id: "1"
@@ -41,7 +43,9 @@ site_vlans:
 
 ### Scope: Domain
 
+
 > /inventory/group_vars/domain-1/domain.yaml
+
 
 ```
 domain_id: "1"
@@ -71,6 +75,7 @@ vlan_config:
 
 > /inventory/group_vars/domain-1/interface.yaml
 
+
 ```
 interface_config:
   "Ethernet3":
@@ -80,6 +85,7 @@ interface_config:
 ```
 
 > /inventory/group_vars/domain-1/mlag.yaml
+
 
 ```
 mlag_config:
@@ -92,6 +98,7 @@ mlag_config:
 ```
 
 > /inventory/group_vars/domain-1/switchport.yaml
+
 
 ```
 switchport_config:
@@ -107,6 +114,7 @@ switchport_config:
 
 > /inventory/host_vars/veos-1/device.yaml
 
+
 ```
 device_peer: "veos-2"
 device_id: "1"
@@ -114,12 +122,20 @@ device_id: "1"
 
 > /inventory/host_vars/veos-2/device.yaml
 
+
 ```
 device_peer: "veos-1"
 device_id: "2"
 ```
 
 ### Scope: Feature
+
+> /inventory/group_vars/feature-mlag/enabled.yaml
+
+```
+mlag_enabled: true
+```
+
 > /inventory/group_vars/feature-mlag/setup.yaml
 
 ```
@@ -179,7 +195,7 @@ mlag_setup:
         tasks_from: "config.yaml"
 ```
 
-## Requirements
+# Requirements
 
 The following variables must be set for `ansible-network.config_manager`:
 
@@ -193,6 +209,5 @@ ansible_network_provider: ansible-network.arista_eos
 This role requires the following roles:
 
 ```
-ansible-network.config_manager
-ansible-network.arista_eos
+ansible-network.network-engine
 ```

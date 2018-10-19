@@ -15,4 +15,4 @@ galaxy_info:
     - setup
     - mlag
   dependencies:
-    - ansible-network.config_manager
+    - ansible-network.network-engine

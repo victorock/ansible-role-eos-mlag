@@ -1,0 +1,32 @@
+---
+argument_spec:
+  mlag_config:
+    type: list
+    options:
+      name:
+        aliases:
+          - "interface"
+        required: true
+        description:
+          - "Name of the interface to configure mlag"
+
+      state:
+        required: false
+        default: present
+        choices:
+          - present
+          - absent
+        description:
+          - "Desired state: present, absent"
+
+      mlag:
+        type: int
+        required: true
+        description:
+          - "The MLAG ID"
+      
+      extension:
+        type: dict
+        required: false
+        description:
+          - "Extension of specs with platform-specific keys/values"

@@ -1,3 +1,3 @@
 ---
-eos_mlag_config: "{{ mlag_config }}"
-eos_mlag_setup: "{{ mlag_setup }}"
+mlag_setup: {}
+mlag_interfaces: []

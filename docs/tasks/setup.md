@@ -119,6 +119,13 @@ device_id: "2"
 ```
 
 ### Scope: Feature
+
+> /inventory/group_vars/feature-mlag/enabled.yaml
+
+```
+mlag_enabled: true
+```
+
 > /inventory/group_vars/feature-mlag/setup.yaml
 
 ```
@@ -192,6 +199,5 @@ ansible_network_provider: ansible-network.arista_eos
 This role requires the following roles:
 
 ```
-ansible-network.config_manager
-ansible-network.arista_eos
+ansible-network.network-engine
 ```

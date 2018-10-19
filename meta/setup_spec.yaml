@@ -1,8 +1,19 @@
 ---
 argument_spec:
-  eos_mlag_setup:
+  mlag_setup:
     type: dict
     options:
+
+      state:
+        type: str
+        required: false
+        default: present
+        choices:
+          - "present"
+          - "absent"
+        description:
+          - "Desired state: present, absent"
+
       peer:
         type: str
         required: true
@@ -10,12 +21,16 @@ argument_spec:
           - "The MLAG peer switch hostname (inventory_hostname)"
 
       vlan:
+        type: int
+        required: false
         default: "4094"
         description:
           - "VLAN to use for peer communication."
           - "VLAN is used to create the interface vlan for MLAG_CONTROL_PLANE."
 
       domain:
+        type: int
+        required: false
         default: "1"
         description:
           - "Represents the MLAG domain."
@@ -23,6 +38,8 @@ argument_spec:
           - "Domain is used to create the MLAG_CONTROL_PLANE VRF with RD <site>:<domain>"
 
       site:
+        type: int
+        required: false
         default: "1"
         description:
           - "Represents the site where the domain is located."
@@ -30,42 +47,66 @@ argument_spec:
           - "Site is used to create the MLAG_CONTROL_PLANE VRF with RD <site>:<domain>"
 
       device:
+        type: int
+        required: false
         default: "1"
         description:
           - "Unique ID to represent the device member of the MLAG domain"
           - "The ID is used to create the peer communication address 169.254.<domain>.<site><device>"
 
       linkagg:
+        type: int
+        required: false
         default: "1"
         description:
           - "Linkagg to use for the peer-to-peer communication."
 
       vlans:
         type: list
+        required: false
         default:
-          - "100-200"
+          - "all"
         description:
           - "List of vlans member of the MLAG domain"
-          - "VLANs are created if they do not exist"
+          - "VLANs are NOT created if they do not exist"
 
       interlinks:
         type: list
+        required: false
         default:
           - "Ethernet1"
         description:
           - "List of physical interfaces used by linkagg as interlinks for the peer-to-peer communication"
 
       heartbeat:
+        type: int
         default: "10000"
+        required: false
         description:
           - "Timer for heartbeat in ms"
 
       reload_delay:
+        type: int
         default: "150"
+        required: false
         description:
           - "Delay to bring MLAGs up after reload."
           - "Helps to ensure that MLAGs comes up only when adjacency is done and tables are pre-populated."
           - "Prevents blackhole of traffic when device is converging and tables being populated after a reboot."
+
+      ipv4:
+        type: str
+        required: true
+        description:
+          - "IPV4 address to use for the MLAG intercommunication"
+          - "TODO: Make this address created by default as per the following: 169.254.<domain>.<site><device>/24"
+
+      vrf:
+        type: str
+        required: false
+        default: "mlag_control"
+        description:
+          - "The VRF name for the MLAG intercommunication"
 
       extension:
         type: dict
